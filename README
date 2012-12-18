@@ -1,0 +1,26 @@
+Platform: Beagle Board
+
+(1) arch/arm/kernel/sys_arm.c
+
+    //added by Tom Xue
+    asmlinkage int sys_foo(int number) 
+    {
+        printk(KERN_EMERG "tomxue: sys_foo\n");
+        printk(KERN_EMERG "tomxue: the input number = %d\n", number);
+        return THREAD_SIZE; 
+    }
+
+(2) arch/arm/include/asm/unistd.h
+    #define __NR_foo			(__NR_SYSCALL_BASE+376)  // by Tom Xue
+
+(3) arch/arm/kernel/calls.S
+    /* 376 */   CALL(sys_foo)
+
+(4) syscall_test.c: user code which runs on Beagle Board
+
+(5) Compile and run on Beagle Board:
+
+ubuntu@omap:~/tom/test$ gcc -o syscall_test syscall_test.c                                                                                            
+ubuntu@omap:~/tom/test$ ./syscall_test                                                                                                                
+[ 2271.988616] tomxue: sys_foo                                                                                                                        
+[ 2271.991577] tomxue: the input number = 100 
